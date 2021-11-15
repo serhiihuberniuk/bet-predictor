@@ -1,0 +1,4 @@
+mongo_url: "mongodb://localhost:27017"
+mongo_db_name: "bet-predictorDB"
+api_key: "MjBrazV1cWZmN3Zmc200bGZhcHB0Z25rcnA6MWluY2wzc2QydDk2YmdwdDQzdmIwc28xMmdjZnVqNW9mMHQxOXVyNjA4cnEycWpsdW5rYg=="
+
