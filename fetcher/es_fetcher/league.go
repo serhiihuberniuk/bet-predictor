@@ -3,12 +3,12 @@ package fetcher
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 
-	"github.com/serhiihuberniuk/bet-predictor/fetcher/es-fetcher/es-models"
+	"github.com/serhiihuberniuk/bet-predictor/fetcher/es_fetcher/es_models"
 	"github.com/serhiihuberniuk/bet-predictor/models"
 )
 
@@ -33,11 +33,16 @@ func (f *ESFetcher) AllLeaguesList(ctx context.Context) ([]*models.League, error
 	}
 
 	var leagues []*models.League
-	for _, league := range remoteLeagues {
-		leagues = append(leagues, &models.League{
-			Name:    league.Name,
-			Country: league.CountryName,
+	for _, v := range remoteLeagues {
+		league, err := models.NewLeague(models.CreateLeaguePayload{
+			Name:    v.Name,
+			Country: v.CountryName,
 		})
+		if err != nil {
+			return nil, fmt.Errorf("error while creating league: %w", err)
+		}
+
+		leagues = append(leagues, league)
 	}
 
 	return leagues, nil
@@ -49,21 +54,18 @@ func (f *ESFetcher) getPageOfLeagues(ctx context.Context, page int) (*esmodels.L
 		return nil, fmt.Errorf("error while creating request:  %w", err)
 	}
 
-	req.Header.Add("Authorization", "Bearer "+f.token)
-
-	resp, err := f.client.Do(req.WithContext(ctx))
-	if err != nil {
-		return nil, fmt.Errorf("error while sending GET request: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New("response with status: " + resp.Status)
-	}
-
 	var leaguesResponse esmodels.Leagues
-	if err := json.NewDecoder(resp.Body).Decode(&leaguesResponse); err != nil {
-		return nil, fmt.Errorf("error while decoding response: %w", err)
+
+	decodeFn := func(reader io.Reader) error {
+		if err := json.NewDecoder(reader).Decode(&leaguesResponse); err != nil {
+			return fmt.Errorf("error while decoding response: %w", err)
+		}
+
+		return nil
+	}
+
+	if err = f.doRequest(ctx, req, decodeFn); err != nil {
+		return nil, fmt.Errorf("error while doing request: %w", err)
 	}
 
 	return &leaguesResponse, nil

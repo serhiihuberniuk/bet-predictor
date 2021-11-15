@@ -8,9 +8,9 @@ import (
 )
 
 type Config struct {
-	MongoUrl        string `yaml:"mongo_url"`
-	MongoDbName     string `yaml:"mongo_db_name"`
-	CredentialsFile string `yaml:"credentials_file"`
+	MongoUrl    string `yaml:"mongo_url"`
+	MongoDbName string `yaml:"mongo_db_name"`
+	ApiKey      string `yaml:"api_key"`
 }
 
 func ReadConfig(configFile string) (Config, error) {

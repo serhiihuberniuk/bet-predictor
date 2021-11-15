@@ -2,10 +2,13 @@ package models
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
 )
+
+var nameSpace = uuid.NewSHA1(uuid.NameSpaceURL, []byte("league"))
 
 type League struct {
 	ID          string `bson:"_id,omitempty"`
@@ -20,28 +23,18 @@ type CreateLeaguePayload struct {
 	Country string
 }
 
-func (l *League) SetSlug() error {
-	if l.Name == "" {
-		return errors.New("field name is empty")
+func NewLeague(payload CreateLeaguePayload) (*League, error) {
+	league := &League{
+		Name:    strings.Trim(payload.Name, " "),
+		Country: strings.Trim(payload.Country, " "),
+	}
+	if league.Name == "" {
+		return nil, errors.New("name is not specified")
 	}
 
-	l.Slug = slug.Make(l.Name)
+	league.Slug = slug.Make(league.Name)
+	league.CountrySlug = slug.Make(league.Country)
+	league.ID = uuid.NewSHA1(nameSpace, []byte(league.CountrySlug+league.Slug)).String()
 
-	return nil
-}
-
-func (l *League) SetCountrySlug() {
-	l.CountrySlug = slug.Make(l.Country)
-
-	return
-}
-
-func (l *League) SetID() error {
-	if l.Slug == "" {
-		return errors.New("cannot create ID: field slug is empty")
-	}
-
-	l.ID = uuid.NewSHA1(uuid.NameSpaceURL, []byte(l.CountrySlug+l.Slug)).String()
-
-	return nil
+	return league, nil
 }
