@@ -9,7 +9,7 @@ import (
 )
 
 var updateLeagueCmd = &cobra.Command{
-	Use:   "update leagues",
+	Use:   "update:leagues",
 	Short: "Sync leagues information in db",
 	Long:  "Long description of update leagues",
 	RunE: func(cmd *cobra.Command, args []string) error {
@@ -89,8 +89,9 @@ var updateLeagueCmd = &cobra.Command{
 
 					for _, v := range leaguesToDownload {
 						if _, err := commandContext.Service.CreateLeague(commandContext.Ctx, models.CreateLeaguePayload{
-							Name:    v.Name,
-							Country: v.Country,
+							Name:            v.Name,
+							Country:         v.Country,
+							CurrentSeasonID: v.CurrentSeasonID,
 						}); err != nil {
 							return fmt.Errorf("error while creating leagues: %w", err)
 						}

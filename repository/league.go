@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/serhiihuberniuk/bet-predictor/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -18,10 +19,14 @@ func (r *Repository) CreateLeague(ctx context.Context, league *models.League) er
 	return nil
 }
 
-func (r *Repository) GetLeagueByID(ctx context.Context, leagueID string) (*models.League, error) {
+func (r *Repository) GetLeagueByCountryAndName(ctx context.Context, countrySlug, slug string) (*models.League, error) {
 	var league models.League
 
-	if err := r.useLeagueCollection().FindOne(ctx, bson.M{"_id": leagueID}).Decode(&league); err != nil {
+	if err := r.useLeagueCollection().FindOne(ctx, bson.M{"slug": slug, "country_slug": countrySlug}).Decode(&league); err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return nil, models.ErrNotFound
+		}
+
 		return nil, fmt.Errorf("error while getting from db: %w", err)
 	}
 
