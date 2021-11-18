@@ -88,10 +88,16 @@ func findMissedTeamsInFirstList(firstList []*models.Team, secondList []*models.T
 	}
 
 	var missed []*models.Team
+	duplicates := make(map[string]struct{})
+
 	for _, v := range secondList {
 		_, ok := teamsMap[v.ID]
 		if !ok {
-			missed = append(missed, v)
+			_, ok = duplicates[v.ID]
+			if !ok {
+				missed = append(missed, v)
+				duplicates[v.ID] = struct{}{}
+			}
 		}
 	}
 
