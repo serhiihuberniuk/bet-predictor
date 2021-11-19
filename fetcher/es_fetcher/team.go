@@ -11,7 +11,7 @@ import (
 	"github.com/serhiihuberniuk/bet-predictor/models"
 )
 
-func (f *ESFetcher) GetTeamsBySeasonID(ctx context.Context, season int) ([]*models.Team, error) {
+func (f *ESFetcher) GetTeamsBySeasonID(ctx context.Context, season string) ([]*models.Team, error) {
 	page := 1
 	remoteTeams := make([]esmodels.Team, 0)
 
@@ -27,6 +27,15 @@ func (f *ESFetcher) GetTeamsBySeasonID(ctx context.Context, season int) ([]*mode
 		}
 	}
 
+	teams, err := createTeamsListFromResponse(remoteTeams)
+	if err != nil {
+		return nil, fmt.Errorf("error while creating list of teams from response: %w", err)
+	}
+
+	return teams, nil
+}
+
+func createTeamsListFromResponse(remoteTeams []esmodels.Team) ([]*models.Team, error) {
 	teams := make([]*models.Team, 0, len(remoteTeams))
 	for _, v := range remoteTeams {
 		if v.FullName == "" {
@@ -43,13 +52,12 @@ func (f *ESFetcher) GetTeamsBySeasonID(ctx context.Context, season int) ([]*mode
 
 		teams = append(teams, team)
 	}
-
 	return teams, nil
 }
 
-func (f *ESFetcher) getPageOfTeamsBySeason(ctx context.Context, season, page int) (*esmodels.Teams, error) {
+func (f *ESFetcher) getPageOfTeamsBySeason(ctx context.Context, season string, page int) (*esmodels.Teams, error) {
 	req, err := http.NewRequest(http.MethodGet,
-		fmt.Sprintf("https://football.elenasport.io/v2/seasons/%v/teams?page=%v", season, page), nil)
+		fmt.Sprintf(hostNameES+"/v2/seasons/%v/teams?page=%v", season, page), nil)
 	if err != nil {
 		return nil, fmt.Errorf("error while creating request: %w", err)
 	}

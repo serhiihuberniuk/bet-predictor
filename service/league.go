@@ -20,8 +20,8 @@ func (s *Service) CreateLeague(ctx context.Context, payload models.CreateLeagueP
 	return league.ID, nil
 }
 
-func (s *Service) GetLeagueByCountryAndName(ctx context.Context, countrySlug, slug string) (*models.League, error) {
-	league, err := s.repo.GetLeagueByCountryAndName(ctx, countrySlug, slug)
+func (s *Service) GetLeagueBySlug(ctx context.Context, slug string) (*models.League, error) {
+	league, err := s.repo.GetLeagueBySlug(ctx, slug)
 	if err != nil {
 		return nil, fmt.Errorf("error while getting league from repository layer: %w", err)
 	}

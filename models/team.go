@@ -1,14 +1,13 @@
 package models
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
 	"github.com/pkg/errors"
 )
-
-var nameSpaceTeam = uuid.NewSHA1(uuid.NameSpaceURL, []byte("team"))
 
 type Team struct {
 	ID          string `bson:"_id"`
@@ -39,7 +38,13 @@ func NewTeam(payload CreateTeamPayload) (*Team, error) {
 
 	t.CountrySlug = slug.Make(t.Country)
 	t.Slug = slug.Make(t.Name)
-	t.ID = uuid.NewSHA1(nameSpaceTeam, []byte(t.CountrySlug+t.Slug)).String()
+
+	nameSpace, err := getNameSpace()
+	if err != nil {
+		return nil, fmt.Errorf("error while getting nameSpace: %w", err)
+	}
+
+	t.ID = uuid.NewSHA1(nameSpace, []byte(t.CountrySlug+t.Slug)).String()
 
 	return t, nil
 }

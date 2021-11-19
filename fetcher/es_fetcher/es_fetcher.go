@@ -13,6 +13,8 @@ import (
 	"github.com/serhiihuberniuk/bet-predictor/fetcher/es_fetcher/es_models"
 )
 
+const hostNameES = "https://football.elenasport.io"
+
 type ESFetcher struct {
 	client http.Client
 	apiKey string
@@ -67,19 +69,23 @@ func (f *ESFetcher) doRequest(ctx context.Context, req *http.Request, decodeFn f
 	if req.Header.Get("Authorization") == "" {
 		req.Header.Add("Authorization", "Bearer "+f.token)
 	}
-
-	resp, err := f.client.Do(req.WithContext(ctx))
-	if err != nil {
-		return fmt.Errorf("error while sending request: %w", err)
-	}
-
-	if resp.StatusCode == http.StatusForbidden {
-		if err = f.getToken(ctx); err != nil {
-			return fmt.Errorf("error while getting token: %w", err)
+	/*
+		resp, err := f.client.Do(req.WithContext(ctx))
+		if err != nil {
+			return fmt.Errorf("error while sending request: %w", err)
 		}
 
-		return f.doRequest(ctx, req, decodeFn)
-	}
+		if resp.StatusCode == http.StatusForbidden {
+			if err = f.getToken(ctx); err != nil {
+				return fmt.Errorf("error while getting token: %w", err)
+			}
+
+			return f.doRequest(ctx, req, decodeFn)
+		}
+	*/
+
+	resp := teamsBySeasonResponseMock()
+	//resp := leaguesResponseMock()
 
 	if resp.StatusCode != http.StatusOK {
 		return errors.New("response with status: " + resp.Status)

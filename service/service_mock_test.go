@@ -91,19 +91,19 @@ func (mr *MockrepositoryMockRecorder) DeleteTeam(ctx, teamID interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteTeam", reflect.TypeOf((*Mockrepository)(nil).DeleteTeam), ctx, teamID)
 }
 
-// GetLeagueByCountryAndName mocks base method.
-func (m *Mockrepository) GetLeagueByCountryAndName(ctx context.Context, countrySlug, slug string) (*models.League, error) {
+// GetLeagueBySlug mocks base method.
+func (m *Mockrepository) GetLeagueBySlug(ctx context.Context, slug string) (*models.League, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetLeagueByCountryAndName", ctx, countrySlug, slug)
+	ret := m.ctrl.Call(m, "GetLeagueBySlug", ctx, slug)
 	ret0, _ := ret[0].(*models.League)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetLeagueByCountryAndName indicates an expected call of GetLeagueByCountryAndName.
-func (mr *MockrepositoryMockRecorder) GetLeagueByCountryAndName(ctx, countrySlug, slug interface{}) *gomock.Call {
+// GetLeagueBySlug indicates an expected call of GetLeagueBySlug.
+func (mr *MockrepositoryMockRecorder) GetLeagueBySlug(ctx, slug interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLeagueByCountryAndName", reflect.TypeOf((*Mockrepository)(nil).GetLeagueByCountryAndName), ctx, countrySlug, slug)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetLeagueBySlug", reflect.TypeOf((*Mockrepository)(nil).GetLeagueBySlug), ctx, slug)
 }
 
 // ListLeagues mocks base method.
@@ -175,7 +175,7 @@ func (mr *MockfetcherMockRecorder) AllLeaguesList(ctx interface{}) *gomock.Call 
 }
 
 // GetTeamsBySeasonID mocks base method.
-func (m *Mockfetcher) GetTeamsBySeasonID(ctx context.Context, seasonID int) ([]*models.Team, error) {
+func (m *Mockfetcher) GetTeamsBySeasonID(ctx context.Context, seasonID string) ([]*models.Team, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetTeamsBySeasonID", ctx, seasonID)
 	ret0, _ := ret[0].([]*models.Team)

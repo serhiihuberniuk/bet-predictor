@@ -19,10 +19,10 @@ func (r *Repository) CreateLeague(ctx context.Context, league *models.League) er
 	return nil
 }
 
-func (r *Repository) GetLeagueByCountryAndName(ctx context.Context, countrySlug, slug string) (*models.League, error) {
+func (r *Repository) GetLeagueBySlug(ctx context.Context, slug string) (*models.League, error) {
 	var league models.League
 
-	if err := r.useLeagueCollection().FindOne(ctx, bson.M{"slug": slug, "country_slug": countrySlug}).Decode(&league); err != nil {
+	if err := r.useLeagueCollection().FindOne(ctx, bson.M{"slug": slug}).Decode(&league); err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
 			return nil, models.ErrNotFound
 		}

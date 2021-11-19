@@ -9,7 +9,7 @@ import (
 
 type repository interface {
 	CreateLeague(ctx context.Context, league *models.League) error
-	GetLeagueByCountryAndName(ctx context.Context, countrySlug, slug string) (*models.League, error)
+	GetLeagueBySlug(ctx context.Context, slug string) (*models.League, error)
 	DeleteLeague(ctx context.Context, id string) error
 	ListLeagues(ctx context.Context) ([]*models.League, error)
 
@@ -20,7 +20,7 @@ type repository interface {
 
 type fetcher interface {
 	AllLeaguesList(ctx context.Context) ([]*models.League, error)
-	GetTeamsBySeasonID(ctx context.Context, seasonID int) ([]*models.Team, error)
+	GetTeamsBySeasonID(ctx context.Context, seasonID string) ([]*models.Team, error)
 }
 
 type Service struct {

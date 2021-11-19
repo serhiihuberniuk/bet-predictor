@@ -51,7 +51,7 @@ func (s *Service) CompareAllTeamsLists(ctx context.Context) (teamsToDownload []*
 	var remoteTeams []*models.Team
 	for _, league := range leagues {
 
-		teams, err := s.fetcher.GetTeamsBySeasonID(ctx, league.CurrentSeasonID)
+		teams, err := s.fetcher.GetTeamsBySeasonID(ctx, league.ESCurrentSeasonID)
 		if err != nil {
 			return nil, nil, fmt.Errorf("error while getting list of teams from remote: %w", err)
 		}
@@ -71,7 +71,7 @@ func (s *Service) CompareTeamsListInLeague(ctx context.Context, league *models.L
 		return nil, nil, fmt.Errorf("error while getting teams list from db: %w", err)
 	}
 
-	remoteTeams, err := s.fetcher.GetTeamsBySeasonID(ctx, league.CurrentSeasonID)
+	remoteTeams, err := s.fetcher.GetTeamsBySeasonID(ctx, league.ESCurrentSeasonID)
 	if err != nil {
 		return nil, nil, fmt.Errorf("error while getting teams list from remote: %w", err)
 	}

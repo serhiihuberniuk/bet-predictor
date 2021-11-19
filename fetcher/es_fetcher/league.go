@@ -41,7 +41,7 @@ func (f *ESFetcher) AllLeaguesList(ctx context.Context) ([]*models.League, error
 		league, err := models.NewLeague(models.CreateLeaguePayload{
 			Name:            v.Name,
 			Country:         v.CountryName,
-			CurrentSeasonID: v.Expand.CurrentSeason[0].ID,
+			CurrentSeasonID: strconv.Itoa(v.Expand.CurrentSeason[0].ID),
 		})
 		if err != nil {
 			return nil, fmt.Errorf("error while creating league: %w", err)
@@ -54,7 +54,7 @@ func (f *ESFetcher) AllLeaguesList(ctx context.Context) ([]*models.League, error
 }
 
 func (f *ESFetcher) getPageOfLeagues(ctx context.Context, page int) (*esmodels.Leagues, error) {
-	req, err := http.NewRequest(http.MethodGet, "https://football.elenasport.io/v2/leagues?expand=current_season&page="+strconv.Itoa(page), nil)
+	req, err := http.NewRequest(http.MethodGet, hostNameES+"/v2/leagues?expand=current_season&page="+strconv.Itoa(page), nil)
 	if err != nil {
 		return nil, fmt.Errorf("error while creating request:  %w", err)
 	}

@@ -14,10 +14,13 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
-}
-
-func init() {
 	rootCmd.PersistentFlags().StringVar(&apiKeyFlag, "api-key", "", "Set api-key if it is different from default")
 	rootCmd.PersistentFlags().StringVar(&cfgFileFlag, "config", "./../config.yaml", "Set path to config file")
+
+	rootCmd.AddCommand(updateLeagueCmd)
+
+	rootCmd.AddCommand(updateTeamsCmd)
+	updateTeamsCmd.PersistentFlags().StringVarP(&leagueSlag, "league-slag", "l", "", "Set slug-name of the league in which you want to update the teams")
+
+	cobra.CheckErr(rootCmd.Execute())
 }
