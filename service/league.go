@@ -20,6 +20,15 @@ func (s *Service) CreateLeague(ctx context.Context, payload models.CreateLeagueP
 	return league.ID, nil
 }
 
+func (s *Service) GetLeagueBySlug(ctx context.Context, slug string) (*models.League, error) {
+	league, err := s.repo.GetLeagueBySlug(ctx, slug)
+	if err != nil {
+		return nil, fmt.Errorf("error while getting league from repository layer: %w", err)
+	}
+
+	return league, nil
+}
+
 func (s *Service) DeleteLeague(ctx context.Context, id string) error {
 	if err := s.repo.DeleteLeague(ctx, id); err != nil {
 		return fmt.Errorf("error while deleting league from db: %w", err)
